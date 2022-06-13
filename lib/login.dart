@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'home.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({Key key}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -90,9 +90,10 @@ class _LoginPageState extends State<LoginPage> {
                   minWidth: double.infinity,
                   height: double.infinity,
                   onPressed: () {
-                    Navigator.push(
+                    Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(builder: (context) => HomePage()),
+                      (Route<dynamic> route) => false,
                     );
                   },
                   child: Text(

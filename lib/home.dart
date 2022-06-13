@@ -1,9 +1,9 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_search_bar/flutter_search_bar.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({Key key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -11,95 +11,78 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   @override
-  String text = "Initial Text";
+  int _selectedIndex = 0;
+
+  void _onInputTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  SearchBar searchBar;
+
+  AppBar buildAppBar(BuildContext context) {
+    return new AppBar(
+        title: new Text('Beranda'),
+        actions: [searchBar.getSearchAction(context)]);
+  }
+
+  _HomePageState() {
+    searchBar = new SearchBar(
+        inBar: false,
+        setState: setState,
+        onSubmitted: print,
+        buildDefaultAppBar: buildAppBar);
+  }
+
+  static const List<Widget> _pages = <Widget>[
+    Icon(
+      Icons.list,
+      size: 150,
+    ),
+    Icon(
+      Icons.camera,
+      size: 150,
+    ),
+    Icon(
+      Icons.chat,
+      size: 150,
+    ),
+  ];
+
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Beranda"),
-        ),
-        drawer: Drawer(
-          child: ListView(
-            children: <Widget>[
-              Container(
-                child: DrawerHeader(
-                  child: Container(
-                    child: Column(
-                      children: <Widget>[
-                        CircleAvatar(
-                          backgroundImage: NetworkImage(
-                              "https://cdn.picpng.com/person/user-person-people-profile-53120.png"),
-                          radius: 50,
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          'OneTourism',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                child: Column(
-                  children: <Widget>[
-                    ListTile(
-                      leading: Icon(Icons.info),
-                      title: Text("About"),
-                      onTap: () {
-                        setState(
-                          () {
-                            text = "info pressed";
-                          },
-                        );
-                      },
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.save),
-                      title: Text("Save", style: TextStyle(fontSize: 20)),
-                      onTap: () {
-                        setState(
-                          () {
-                            text = "save pressed";
-                          },
-                        );
-                      },
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.settings),
-                      title: Text("Settings"),
-                      onTap: () {
-                        setState(
-                          () {
-                            text = "settings pressed";
-                          },
-                        );
-                      },
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.exit_to_app),
-                      title: Text("Exit"),
-                      onTap: () {
-                        exit(0);
-                      },
-                    ),
-                  ],
-                ),
-              )
-            ],
+      appBar: searchBar.build(context),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Color(0xFF6200EE),
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white.withOpacity(.60),
+        selectedFontSize: 18,
+        unselectedFontSize: 14,
+        elevation: 0,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.list),
+            label: 'Destination',
           ),
-        ),
-        body: Center(
-          child: Container(
-            child: Row(
-              children: [],
-            ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Camera',
           ),
-        ));
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            label: 'Chats',
+          ),
+        ],
+        onTap: _onInputTapped,
+        currentIndex: _selectedIndex,
+      ),
+      body: Container(
+        child: Center(
+          child: _pages.elementAt(_selectedIndex),
+        ),
+      ),
+    );
   }
 }
