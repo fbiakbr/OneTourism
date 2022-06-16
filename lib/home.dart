@@ -1,6 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
+import 'package:onetourism/add.dart';
+import 'login.dart';
+import 'destinations.dart';
+import 'add.dart';
+import 'search.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -36,18 +41,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   static const List<Widget> _pages = <Widget>[
-    Icon(
-      Icons.list,
-      size: 150,
-    ),
-    Icon(
-      Icons.camera,
-      size: 150,
-    ),
-    Icon(
-      Icons.chat,
-      size: 150,
-    ),
+    DestinationsPage(), 
+    SearchPage(),
+    AddPage(),
   ];
 
   Widget build(BuildContext context) {
@@ -55,7 +51,7 @@ class _HomePageState extends State<HomePage> {
       appBar: searchBar.build(context),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        backgroundColor: Color(0xFF6200EE),
+        backgroundColor: Colors.indigo,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white.withOpacity(.60),
         selectedFontSize: 18,
@@ -68,11 +64,11 @@ class _HomePageState extends State<HomePage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
-            label: 'Camera',
+            label: 'Search',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add),
-            label: 'Chats',
+            label: 'Add',
           ),
         ],
         onTap: _onInputTapped,

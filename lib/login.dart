@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'home.dart';
+import 'register.dart';
+import 'package:http/http.dart' as http;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key key}) : super(key: key);
@@ -9,6 +11,48 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  void loginUser() {
+    // send post request to server and save response in variable
+    var url = Uri.parse('http://54.169.198.245:5050/auth/login');
+    var body = {
+      'username': _usernameController.text,
+      'password': _passwordController.text,
+    };
+    http.post(url, body: body).then((response) {
+      print(response.body);
+      // check if auth property in response body is true
+      if (response.body.contains('true')) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(),
+          ),
+        );
+      } else {
+        // show error message
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Error'),
+              content: Text('Invalid username or password'),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('Close'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
             height: 10,
           ),
           Text(
-            'Welcome back, you\'ve been missed!',
+            'Welcome back!',
             style: TextStyle(
               fontSize: 20,
             ),
@@ -40,8 +84,9 @@ class _LoginPageState extends State<LoginPage> {
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: Container(
               child: TextField(
+                controller: _usernameController,
                 decoration: InputDecoration(
-                  labelText: 'Email',
+                  labelText: 'Username',
                   labelStyle: TextStyle(
                     fontSize: 18,
                   ),
@@ -59,6 +104,7 @@ class _LoginPageState extends State<LoginPage> {
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: Container(
               child: TextField(
+                controller: _passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Password',
@@ -89,12 +135,9 @@ class _LoginPageState extends State<LoginPage> {
                 child: MaterialButton(
                   minWidth: double.infinity,
                   height: double.infinity,
+                  // post data to server
                   onPressed: () {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                      (Route<dynamic> route) => false,
-                    );
+                    loginUser();
                   },
                   child: Text(
                     'Login',
@@ -111,7 +154,7 @@ class _LoginPageState extends State<LoginPage> {
             height: 20,
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Text(
                 'Don\'t have an account?',
@@ -119,14 +162,24 @@ class _LoginPageState extends State<LoginPage> {
                   fontSize: 16,
                 ),
               ),
-              Text(
-                ' Sign Up',
-                style: TextStyle(
-                  color: Colors.indigo,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+              Container(
+                child: FlatButton(
+                  child: Text(
+                    'Register',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.indigo,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => RegisterPage()),
+                      (Route<dynamic> route) => false,
+                    );
+                  },
                 ),
-              ),
+              )
             ],
           )
         ],
